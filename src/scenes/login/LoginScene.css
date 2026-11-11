@@ -1,0 +1,123 @@
+.login {
+  /* The login screen always uses the soft pastel look, in light and dark mode. */
+  --color-bg: #ffffff;
+  --color-surface: rgba(255, 255, 255, 0.9);
+  --color-text: #3d3354;
+  --color-text-muted: #7a6f8f;
+  --color-accent: #d6639b;
+  --color-border: rgba(150, 120, 190, 0.35);
+  --color-danger: #b91c1c;
+
+  color: var(--color-text);
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  overflow: hidden; /* the login screen never scrolls */
+}
+
+/* The pastel scene sits on top of the door picture and dissolves away after the password. */
+.login__hearts {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: #ecd5f1; /* shown for a moment before the animated scene fades in */
+  will-change: opacity, transform;
+}
+
+/* ---- Password card ---- */
+.login__center {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  overflow-y: auto; /* only scrolls on a tiny screen where the card cannot fit */
+  padding: max(var(--space-6), env(safe-area-inset-top)) var(--space-6)
+    max(var(--space-6), env(safe-area-inset-bottom));
+}
+
+.login__panel {
+  position: relative;
+  margin: auto;
+  width: min(100%, 24rem);
+  display: grid;
+  gap: var(--space-8);
+  padding: var(--space-8);
+  border-radius: 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.6);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(16px) saturate(140%);
+  box-shadow:
+    0 10px 40px rgba(190, 120, 190, 0.28),
+    0 0 60px rgba(255, 255, 255, 0.7);
+}
+
+.login__title {
+  font-size: var(--text-xl);
+}
+
+.login__hint {
+  margin-top: var(--space-2);
+  color: var(--color-text-muted);
+}
+
+.login__form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.login__field {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.login__label {
+  font-size: var(--text-sm);
+  font-weight: 600;
+}
+
+.login__input {
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  font-size: 1rem; /* 16px minimum stops iOS from zooming in on focus */
+}
+
+.login__input[aria-invalid="true"] {
+  border-color: var(--color-danger);
+}
+
+.login__message {
+  min-height: 1.5em; /* reserves the space so the layout doesn't jump when an error appears */
+  font-size: var(--text-sm);
+  color: var(--color-danger);
+}
+
+.login__button {
+  padding: var(--space-3) var(--space-4);
+  border: 0;
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, #e885b4, #b58be0);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 6px 20px rgba(214, 99, 155, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login__button:not(:disabled):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(214, 99, 155, 0.55);
+}
+
+.login__button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.login__input[readonly] {
+  opacity: 0.6;
+}

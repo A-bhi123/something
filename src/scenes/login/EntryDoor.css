@@ -1,0 +1,149 @@
+.entry {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: #1c1646;
+}
+.entry__defs { position: absolute; }
+
+.entry__backdrop {
+  position: absolute;
+  inset: -6%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(30px) brightness(0.85) saturate(1.15);
+}
+
+/* ---- The camera: the picture, always full height, centred ---- */
+.entry__world {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  translate: -50% 0; /* separate from `transform`, which the camera uses */
+  height: 100%;
+  aspect-ratio: 1717 / 2576;
+  /* The point the camera moves toward: the middle of the door. */
+  transform-origin: 45.75% 52.95%;
+  will-change: transform;
+}
+
+.entry__img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  user-select: none;
+}
+
+.entry__lamp {
+  position: absolute;
+  width: 26%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 224, 140, 0.7), rgba(255, 190, 100, 0.25) 45%, rgba(255, 190, 100, 0) 70%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* ---- The door cut-out, in picture space ---- */
+.entry__door {
+  --dl: 32.2;
+  --dt: 32.6;
+  --dw: 27.1;
+  --dh: 40.7;
+  position: absolute;
+  left: calc(var(--dl) * 1%);
+  top: calc(var(--dt) * 1%);
+  width: calc(var(--dw) * 1%);
+  height: calc(var(--dh) * 1%);
+  perspective: 54svh; /* gives the swinging door its depth */
+}
+
+/* The warm room that shows once the door is open. */
+.entry__interior {
+  position: absolute;
+  inset: -1.5% 0 0 -1.5%; /* slightly larger than the door so no painted pixels peek out at its corners */
+  clip-path: url(#entry-door-clip);
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 42%, #fffdf0 0%, rgba(255, 244, 200, 0.9) 40%, rgba(255, 244, 200, 0) 100%),
+    linear-gradient(180deg, #ffe9b0 0%, #ffbf78 60%, #f59a64 100%);
+}
+
+.entry__leaf {
+  position: absolute;
+  inset: 0;
+  clip-path: url(#entry-door-clip);
+  transform-origin: 100% 50%; /* the handle is on the left, so the hinge is on the right */
+  backface-visibility: hidden;
+  will-change: transform;
+}
+.entry__leafimg {
+  position: absolute;
+  display: block;
+  max-width: none;
+  /* Same picture as the background, placed so the door lines up exactly with the original. */
+  width: calc(10000% / var(--dw));
+  height: calc(10000% / var(--dh));
+  left: calc(var(--dl) / var(--dw) * -100%);
+  top: calc(var(--dt) / var(--dh) * -100%);
+}
+.entry__shade {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: linear-gradient(90deg, rgba(40, 10, 60, 0.85), rgba(40, 10, 60, 0.1));
+}
+
+/* Light growing out of the doorway */
+.entry__glow {
+  position: absolute;
+  left: 45.75%;
+  top: 52.95%;
+  width: 70%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  opacity: 0;
+  background: radial-gradient(circle, rgba(255, 246, 210, 0.95), rgba(255, 214, 150, 0.5) 40%, rgba(255, 214, 150, 0) 70%);
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+/* The camera walks into this. */
+.entry__flood {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background: radial-gradient(circle at 50% 52%, #fffdf0 0%, #ffeab5 38%, #ffcfa8 72%, #ffc0cc 100%);
+}
+
+/* ---- Rain ---- */
+.entry__rain {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.entry__drop {
+  position: absolute;
+  top: -14vh;
+  width: 1.5px;
+  border-radius: 1px;
+  background: linear-gradient(180deg, rgba(200, 220, 255, 0), rgba(205, 224, 255, 0.8));
+  opacity: 0.65;
+  animation: entry-fall linear infinite;
+  animation-play-state: paused; /* only rains once the visitor is in */
+}
+.entry--live .entry__drop { animation-play-state: running; }
+
+@keyframes entry-fall {
+  to { transform: translate3d(-3vh, 128vh, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .entry__drop { display: none; }
+}

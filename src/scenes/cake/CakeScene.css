@@ -1,0 +1,307 @@
+.cake {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: #f3d9c9;
+  color: #fff;
+  font-family: var(--font-body);
+  touch-action: manipulation;
+}
+.cake__fill {
+  position: absolute;
+  inset: -4%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(26px) saturate(1.1);
+  transform: scale(1.05);
+}
+.cake__bg {
+  position: absolute;
+  background-size: 100% 100%;
+  will-change: transform;
+}
+.cake__warm {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 55%, rgba(255, 214, 190, 0.1), rgba(120, 40, 80, 0.28) 100%);
+}
+.cake__canvas,
+.cake__confetti {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.cake__confetti {
+  pointer-events: none;
+  z-index: 6;
+}
+.cake__canvas {
+  z-index: 2;
+}
+.cake[data-phase="ready"] .cake__canvas {
+  cursor: default;
+}
+
+/* ---- knife hint ---- */
+.cake__hint {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 5;
+  width: clamp(120px, 16vmin, 190px);
+  height: clamp(120px, 16vmin, 190px);
+  border: 0;
+  background: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.cake__hint[data-show="1"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+.cake__hint-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 22px 4px rgba(255, 120, 180, 0.65), inset 0 0 18px rgba(255, 160, 205, 0.5);
+  animation: cake-pulse 1.9s ease-out infinite;
+}
+.cake__hint.is-hover .cake__hint-ring {
+  border-color: #ffd7ea;
+  box-shadow: 0 0 32px 8px rgba(255, 120, 180, 0.9), inset 0 0 22px rgba(255, 160, 205, 0.7);
+}
+.cake__hint-label {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+  margin-top: 6px;
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: clamp(0.8rem, 1.6vmin, 1rem);
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  color: #6b2349;
+  background: rgba(255, 244, 249, 0.92);
+  box-shadow: 0 6px 18px rgba(120, 30, 80, 0.3);
+}
+@keyframes cake-pulse {
+  0% {
+    transform: scale(0.72);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(1.12);
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(1.12);
+    opacity: 0.0;
+  }
+}
+
+/* ---- captions ---- */
+.cake__caption {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  top: clamp(18px, 5vh, 56px);
+  margin: 0;
+  max-width: 90vw;
+  text-align: center;
+  font-family: "Great Vibes", cursive;
+  font-size: clamp(1.8rem, 4.2vmin, 3rem);
+  color: #fff;
+  text-shadow: 0 2px 14px rgba(120, 30, 80, 0.7);
+}
+.cake__celebrate {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  top: clamp(14px, 5vh, 60px);
+  text-align: center;
+  pointer-events: none;
+  width: 92vw;
+}
+.cake__celebrate h2 {
+  margin: 0;
+  font-family: "Great Vibes", cursive;
+  font-weight: 400;
+  font-size: clamp(3rem, 9vmin, 6.5rem);
+  line-height: 1.05;
+  background: linear-gradient(180deg, #fff6d8, #f2cf7c 55%, #d8a940);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 4px 16px rgba(120, 30, 80, 0.55));
+}
+.cake__celebrate p {
+  margin: 0.2rem 0 0;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1rem, 2.4vmin, 1.5rem);
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(120, 30, 80, 0.7);
+}
+.cake__continue {
+  position: absolute;
+  z-index: 7;
+  left: 50%;
+  bottom: clamp(18px, 5vh, 48px);
+  border: 0;
+  cursor: pointer;
+  font: 700 1.05rem var(--font-body);
+  color: #6b2349;
+  padding: 0.85rem 2.2rem;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #fff7fb, #ffd3e6);
+  box-shadow: 0 10px 30px rgba(120, 30, 80, 0.45), 0 0 0 3px rgba(255, 255, 255, 0.5);
+}
+
+/* ---- video layer ---- */
+.cake__video {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: #14060f;
+  display: grid;
+  place-items: center;
+  transition: opacity 1.6s ease;
+}
+.cake__video.is-gone {
+  opacity: 0;
+  pointer-events: none;
+}
+.cake__video-blur {
+  position: absolute;
+  inset: -6%;
+  width: 112%;
+  height: 112%;
+  object-fit: cover;
+  filter: blur(34px) brightness(0.7) saturate(1.2);
+}
+/* Whole video is always visible, never cropped; the blurred copy fills the bars on wide screens. */
+.cake__video-main {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: transparent;
+}
+.cake__tap {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: max-content;
+  height: max-content;
+  border: 0;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 0.6rem;
+  align-items: center;
+  font: 700 1.15rem var(--font-body);
+  color: #6b2349;
+  padding: 1rem 2rem;
+  border-radius: 999px;
+  background: rgba(255, 244, 249, 0.95);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+}
+.cake__vbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.18);
+}
+.cake__vbar > div {
+  height: 100%;
+  background: linear-gradient(90deg, #ff8fb8, #ffd98a);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.cake__vtools {
+  position: absolute;
+  top: max(12px, env(safe-area-inset-top));
+  right: max(12px, env(safe-area-inset-right));
+  display: flex;
+  gap: 8px;
+}
+.cake__vtools button {
+  border: 0;
+  cursor: pointer;
+  min-width: 42px;
+  height: 42px;
+  padding: 0 14px;
+  border-radius: 999px;
+  font: 600 0.9rem var(--font-body);
+  color: #fff;
+  background: rgba(20, 6, 15, 0.45);
+  backdrop-filter: blur(8px);
+}
+
+/* ---- disco lights ---- */
+.disco {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  overflow: hidden;
+  mix-blend-mode: screen;
+  animation: disco-in 1.4s ease both;
+}
+@keyframes disco-in {
+  from {
+    opacity: 0;
+  }
+}
+.disco__beam {
+  position: absolute;
+  top: -6%;
+  width: 34vmax;
+  height: 120vmax;
+  transform-origin: 50% 0;
+  clip-path: polygon(46% 0, 54% 0, 100% 100%, 0 100%);
+  opacity: 0.32;
+  filter: blur(6px);
+  animation: beam-sweep 6s ease-in-out infinite alternate;
+}
+.disco__beam--1 { left: 8%; background: linear-gradient(180deg, #ff4fa8, transparent 85%); --a: -32deg; --b: 18deg; }
+.disco__beam--2 { left: 30%; background: linear-gradient(180deg, #7fd8ff, transparent 85%); --a: 24deg; --b: -22deg; animation-duration: 7.4s; }
+.disco__beam--3 { left: 52%; background: linear-gradient(180deg, #ffd86b, transparent 85%); --a: -20deg; --b: 30deg; animation-duration: 5.2s; }
+.disco__beam--4 { left: 74%; background: linear-gradient(180deg, #b48cff, transparent 85%); --a: 30deg; --b: -26deg; animation-duration: 6.6s; }
+@keyframes beam-sweep {
+  from { transform: rotate(var(--a)); }
+  to { transform: rotate(var(--b)); }
+}
+.disco__spot {
+  position: absolute;
+  width: 38vmin;
+  height: 38vmin;
+  border-radius: 50%;
+  filter: blur(26px);
+  opacity: 0.34;
+  animation: spot-drift 9s ease-in-out infinite alternate;
+}
+.disco__spot--1 { left: 6%; top: 40%; background: radial-gradient(circle, #ff4fa8, transparent 68%); }
+.disco__spot--2 { right: 8%; top: 18%; background: radial-gradient(circle, #6fd8ff, transparent 68%); animation-delay: -3s; }
+.disco__spot--3 { left: 42%; top: 66%; background: radial-gradient(circle, #ffd86b, transparent 68%); animation-delay: -6s; }
+@keyframes spot-drift {
+  to { transform: translate(8vw, -6vh) scale(1.25); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .disco__beam,
+  .disco__spot {
+    animation: none;
+  }
+  .cake__hint-ring {
+    animation: none;
+  }
+}

@@ -1,0 +1,4 @@
+.mt { position: relative; width: 100%; height: 100%; overflow: hidden; background: #000; }
+.mt__tile { position: absolute; overflow: hidden; will-change: transform, opacity, filter; backface-visibility: hidden; }
+.mt__img { position: absolute; background-size: cover; background-repeat: no-repeat; background-color: #0b0b0e; }
+.mt__fade { position: absolute; inset: 0; background: #000; opacity: 0; pointer-events: none; }
