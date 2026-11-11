@@ -56,6 +56,9 @@ export function LetterScene({ onContinue }: Props) {
   const letterScale = useMotionValue(m.s0);
   const letterRot = useMotionValue(0);
   const letterZ = useMotionValue(-6);
+  const scrollY = useMotionValue(0);
+  const letterYScrolled = useTransform([letterY, scrollY], ([a, b]: number[]) => a + b);
+
   const r2 = useMotionValue(180);
   const r3 = useMotionValue(-180);
   // Light, shadow
@@ -77,6 +80,23 @@ export function LetterScene({ onContinue }: Props) {
     },
     [px, py, reduce],
   );
+  // Letter likh jaane ke baad: wheel / touch se letter ko upar-neeche sarkao.
+const touchY = useRef(0);
+const maxUp = Math.max(0, 0.47 * m.vh + m.ph / 2 - (m.vh - 90)) + 24;
+const scrollBy = useCallback(
+  (dy: number) => {
+    if (!done) return;
+    scrollY.set(Math.min(0, Math.max(-maxUp, scrollY.get() - dy)));
+  },
+  [done, maxUp, scrollY],
+);
+const onWheel = (e: React.WheelEvent) => scrollBy(e.deltaY);
+const onTouchStart = (e: React.TouchEvent) => { touchY.current = e.touches[0].clientY; };
+const onTouchMove = (e: React.TouchEvent) => {
+  const y = e.touches[0].clientY;
+  scrollBy(touchY.current - y);
+  touchY.current = y;
+};
 
   // ---- The choreography ----
   useEffect(() => {
@@ -104,6 +124,7 @@ export function LetterScene({ onContinue }: Props) {
     letterScale.set(g.s0);
     letterRot.set(0);
     letterZ.set(-6);
+    scrollY.set(0);
     r2.set(180);
     r3.set(-180);
     glow.set(0);
@@ -239,7 +260,7 @@ export function LetterScene({ onContinue }: Props) {
   const discSize = m.ew * 0.38;
 
   return (
-    <main className="lt" onPointerMove={onPointerMove}>
+    <main className="lt" onPointerMove={onPointerMove} onWheel={onWheel} onTouchStart={onTouchStart} onTouchMove={onTouchMove}>
       <MarbleBackground />
 
       {/* golden light spilling from the envelope's mouth */}
@@ -261,7 +282,7 @@ export function LetterScene({ onContinue }: Props) {
             <Envelope ew={m.ew} eh={m.eh} flapRot={flapRot} partsY={partsY} partsFade={partsFade} flapShadow={flapShadow} untied={untied} />
             <motion.div
               className="lt__letter"
-              style={{ left: (m.ew - m.pw) / 2, width: m.pw, y: letterY, scale: letterScale, rotate: letterRot, z: letterZ, originX: 0.5, originY: 0 }}
+              style={{ left: (m.ew - m.pw) / 2, width: m.pw, y: letterYScrolled, scale: letterScale, rotate: letterRot, z: letterZ, originX: 0.5, originY: 0 }}
             >
               <LetterPaper pw={m.pw} ph={m.ph} r2={r2} r3={r3} writing={writing} instant={reduce} />
               {/* readable copy for screen readers */}
