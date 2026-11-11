@@ -309,3 +309,11 @@
   backdrop-filter: blur(8px);
 }
 .lt__btn:focus-visible { outline: 2px solid #d94a86; outline-offset: 3px; }
+
+/* ---------- Extra pages (letter continues below the first sheet) ---------- */
+.lt__extra {
+  position: absolute;
+  left: 0;
+  overflow: hidden;
+  box-shadow: 0 10px 28px rgba(90, 40, 60, 0.18);
+}

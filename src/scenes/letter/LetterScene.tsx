@@ -3,9 +3,10 @@ import { AnimatePresence, animate, motion, useMotionValue, useReducedMotion, use
 import { FlowerRain } from "@/scenes/home/FlowerRain";
 import { Burst } from "./Burst";
 import { Envelope } from "./Envelope";
-import { LetterPaper } from "./LetterPaper";
+import { LetterExtraPage, LetterPaper } from "./LetterPaper";
 import { MarbleBackground } from "./MarbleBackground";
 import { letterContent } from "./letterContent";
+import { useLetterPages } from "./useLetterPages";
 import { useStageMetrics } from "./useStageMetrics";
 import "./LetterScene.css";
 
@@ -27,6 +28,8 @@ export function LetterScene({ onContinue }: Props) {
   const mRef = useRef(m);
   mRef.current = m;
   const reduce = useReducedMotion() === true;
+  const pages = useLetterPages(m.pw, m.ph);
+  const pageGap = m.pw * 0.04;
 
   const [runKey, setRunKey] = useState(0);
   const [captionOn, setCaptionOn] = useState(false);
@@ -58,7 +61,6 @@ export function LetterScene({ onContinue }: Props) {
   const letterZ = useMotionValue(-6);
   const scrollY = useMotionValue(0);
   const letterYScrolled = useTransform([letterY, scrollY], ([a, b]: number[]) => a + b);
-
   const r2 = useMotionValue(180);
   const r3 = useMotionValue(-180);
   // Light, shadow
@@ -80,23 +82,27 @@ export function LetterScene({ onContinue }: Props) {
     },
     [px, py, reduce],
   );
+
   // Letter likh jaane ke baad: wheel / touch se letter ko upar-neeche sarkao.
-const touchY = useRef(0);
-const maxUp = Math.max(0, 0.47 * m.vh + m.ph / 2 - (m.vh - 90)) + 24;
-const scrollBy = useCallback(
-  (dy: number) => {
-    if (!done) return;
-    scrollY.set(Math.min(0, Math.max(-maxUp, scrollY.get() - dy)));
-  },
-  [done, maxUp, scrollY],
-);
-const onWheel = (e: React.WheelEvent) => scrollBy(e.deltaY);
-const onTouchStart = (e: React.TouchEvent) => { touchY.current = e.touches[0].clientY; };
-const onTouchMove = (e: React.TouchEvent) => {
-  const y = e.touches[0].clientY;
-  scrollBy(touchY.current - y);
-  touchY.current = y;
-};
+  const touchY = useRef(0);
+  const contentBottom = 0.47 * m.vh - m.ph / 2 + pages * m.ph + (pages - 1) * pageGap;
+  const maxUp = Math.max(0, contentBottom - (m.vh - 90)) + 24;
+  const scrollBy = useCallback(
+    (dy: number) => {
+      if (!done) return;
+      scrollY.set(Math.min(0, Math.max(-maxUp, scrollY.get() - dy)));
+    },
+    [done, maxUp, scrollY],
+  );
+  const onWheel = (e: React.WheelEvent) => scrollBy(e.deltaY);
+  const onTouchStart = (e: React.TouchEvent) => {
+    touchY.current = e.touches[0].clientY;
+  };
+  const onTouchMove = (e: React.TouchEvent) => {
+    const y = e.touches[0].clientY;
+    scrollBy(touchY.current - y);
+    touchY.current = y;
+  };
 
   // ---- The choreography ----
   useEffect(() => {
@@ -285,6 +291,13 @@ const onTouchMove = (e: React.TouchEvent) => {
               style={{ left: (m.ew - m.pw) / 2, width: m.pw, y: letterYScrolled, scale: letterScale, rotate: letterRot, z: letterZ, originX: 0.5, originY: 0 }}
             >
               <LetterPaper pw={m.pw} ph={m.ph} r2={r2} r3={r3} writing={writing} instant={reduce} />
+              {/* continuation pages: appear once the first page is written */}
+              {done &&
+                Array.from({ length: pages - 1 }, (_, k) => (
+                  <motion.div key={k} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }}>
+                    <LetterExtraPage page={k + 1} pw={m.pw} ph={m.ph} top={(k + 1) * (m.ph + pageGap)} />
+                  </motion.div>
+                ))}
               {/* readable copy for screen readers */}
               <div className="sr-only">
                 {letterContent.body.map((b, i) => (b === "gap" ? null : <p key={i}>{b.text}</p>))}
